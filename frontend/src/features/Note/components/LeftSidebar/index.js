@@ -1,14 +1,23 @@
-import React from 'react';
-import { ProSidebar, SidebarHeader, SidebarContent, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import './SidebarLeft.scss';
-import Title from '../../../../components/Title';
-import Searchbar from '../Searchbar';
+import React from "react";
+import {
+  ProSidebar,
+  SidebarHeader,
+  SidebarContent,
+  Menu,
+  MenuItem,
+  SubMenu,
+} from "react-pro-sidebar";
+import "./LeftSidebar.scss";
+import Title from "../../../../components/Title";
+import Searchbar from "../Searchbar";
+import { Button } from "antd";
 
-function SidebarLeft(props) {
+function LeftSidebar({ logout }) {
   return (
     <ProSidebar>
       <SidebarHeader>
         <Title name="Username" />
+
       </SidebarHeader>
       <SidebarContent>
         <Menu iconShape="square" popperArrow={true}>
@@ -21,10 +30,11 @@ function SidebarLeft(props) {
             <MenuItem>Component 2</MenuItem>
           </SubMenu>
           <MenuItem>Dashboard</MenuItem>
+          <Button onClick={logout}>Log out</Button>
         </Menu>
       </SidebarContent>
     </ProSidebar>
   );
 }
 
-export default SidebarLeft;
+export default LeftSidebar;

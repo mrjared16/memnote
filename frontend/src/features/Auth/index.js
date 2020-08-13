@@ -7,7 +7,6 @@ function Auth() {
     <Switch>
       <Route exact path='/login' component={LoginPage}/>
       <Redirect to='/login'/>
-      
     </Switch>
   );
 }
