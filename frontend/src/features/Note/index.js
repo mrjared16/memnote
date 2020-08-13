@@ -1,12 +1,22 @@
 import React from 'react';
-import HomePage from './pages/HomePage';
 import { Switch, Route } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { removeToken } from "../Auth/authSlice";
+import LeftSidebar from './components/LeftSidebar';
 
 function Note() {
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(removeToken());
+  };
+
   return (
-    <Switch>
-      <Route component={HomePage}/>
-    </Switch>
+    <>
+      <LeftSidebar logout={logout} />
+      <Switch>
+      </Switch>
+    </>
   );
 }
 
