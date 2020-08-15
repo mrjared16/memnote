@@ -1,0 +1,29 @@
+.ant-layout, .ant-menu, .ant-tree {
+  background-color: #242426;
+}
+$item-selected-color: rgb(71, 76, 80);
+
+.ant-layout-sider {
+  background-color: #242426;
+  
+  .ant-menu, .ant-tree-title {
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+  }
+  .ant-tree 
+  {
+    color: rgba(255, 255, 255, 0.6);
+    .ant-tree-node-content-wrapper:hover, .ant-tree-node-content-wrapper:active, .ant-tree-node-selected 
+    {
+      background-color: $item-selected-color;
+    }
+  }
+}
+.ant-menu, .ant-layout,
+.ant-typography, h1.ant-typography, .ant-tree-title {
+  color: #fef5f5;
+}
+
+.sidebar {
+  padding: 5px;
+}

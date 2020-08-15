@@ -19,7 +19,7 @@ function LoginForm(props) {
         {(formikProps) => {
           //const { values } = formikProps;
           return (
-            <Form>
+            <Form className='login-form'>
               <Title name="Login" />
               
               <FastField

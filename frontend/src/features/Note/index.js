@@ -1,21 +1,21 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { useDispatch } from "react-redux";
-import { removeToken } from "../Auth/authSlice";
-import LeftSidebar from './components/LeftSidebar';
+import LeftSidebar from './pages/LeftSidebar';
+import { Layout } from 'antd';
+import './index.scss';
+
+const { Sider } = Layout;
 
 function Note() {
-  const dispatch = useDispatch();
-
-  const logout = () => {
-    dispatch(removeToken());
-  };
-
   return (
     <>
-      <LeftSidebar logout={logout} />
-      <Switch>
-      </Switch>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider className='sidebar'>
+          <LeftSidebar />
+        </Sider>
+        {/* <Layout>
+
+        </Layout> */}
+      </Layout>
     </>
   );
 }
