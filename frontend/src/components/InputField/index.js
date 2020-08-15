@@ -21,12 +21,10 @@ function InputField(props) {
         className="input-field"
         {...field}
       />
-    );
+    )
   };
   return (
-    <div className="input-form">
       <Form.Item>{getInputType(type)}</Form.Item>
-    </div>
   );
 }
 
