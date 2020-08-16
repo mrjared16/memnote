@@ -1,31 +1,34 @@
+$default-font-color: rgba(255, 255, 255, 0.9);
+$button-text-color: rgba(255, 255, 255, 0.6);
+$item-selected-color: rgb(71, 76, 80);
+
 .ant-menu-item-group-title {
-  color: #9DA39B;
+  color: $button-text-color;
   font-weight: bold;
 }
 
-.ant-menu-submenu-title, .ant-menu-item {
-  color: #9DA39B;
+.ant-menu-submenu-title,
+.ant-menu-item {
+  color: $button-text-color;
 }
 
 .ant-menu-item-selected {
   background-color: #373739 !important;
 }
 
+
 .search-btn {
-  background-color: #2E2F31;
+  background-color: #2e2f31 !important;
   border: 0;
-  color: #FEF5F5;
+  color: $default-font-color;
   border-radius: 10px;
   width: 100%;
+  &:hover{
+    background-color: $item-selected-color !important;
+  }
 }
 
-.add-btn, .trash-btn {
+.add-btn,
+.trash-btn {
   width: 100%;
 }
-
-.btn-transparent {
-  background-color: transparent;
-  border: 0;
-  color: #9da39b;
-}
-

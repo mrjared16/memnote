@@ -1,6 +1,25 @@
+$button-text-color: rgba(255, 255, 255, 0.6);
+$item-selected-color: rgb(71, 76, 80);
 .ant-btn {
   display: flex;
   justify-items: flex-start;
   align-items: center;
-  margin: 5px 0px;
+  // border: none;
+  &:hover,
+  &:active,
+  &:focus {
+    background: $item-selected-color;
+    color: inherit !important;
+  }
+}
+// .ant-btn:hover {
+//   color: #ffffff !important;
+//   background-color: grey;
+//   opacity: 0.5;
+// }
+
+.custom-button {
+  background-color: transparent;
+  border: 0;
+  color: $button-text-color;
 }

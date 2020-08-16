@@ -1,6 +1,7 @@
+$button-text-color: rgba(255, 255, 255, 0.6);
 .forgot-password {
   float: right;
-  color: #9DA39B;
+  color: $button-text-color;
   margin: 20px 50px;
 }
 
@@ -12,7 +13,7 @@
 }
 
 .signup {
-  color: #9DA39B;
+  color: $button-text-color;
   text-align: center;
   margin-top: 20px;
 }
