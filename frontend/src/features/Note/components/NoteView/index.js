@@ -19,10 +19,10 @@ function NoteView(props) {
         content,
         isFavorite,
         lastEdited,
-        tags,
+        tags = [],
         children
     } = note;
-
+    console.log(note);
     const noteID = id;
 
     const [previewMode, setPreviewMode] = useState(props.previewMode ? props.previewMode : false);

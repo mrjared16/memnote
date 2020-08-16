@@ -17,6 +17,12 @@ const initialState = {
   activeNoteIndex: 0
 };
 
+export const fetchNote = createAsyncThunk('note/noteLoading', (id) =>
+  noteAPI.getNote(id)
+    .then(response => response.data)
+    .catch(error => error)
+);
+
 const note = createSlice({
   name: "note",
   initialState,
@@ -47,11 +53,7 @@ const note = createSlice({
   }
 });
 
-export const fetchNote = createAsyncThunk('note/noteLoading', (id) =>
-  noteAPI.getNote(id)
-    .then(response => response.data)
-    .catch(error => error)
-);
+
 
 const { reducer, actions } = note;
 export const { setVisibleSearchForm, setNote, setActiveNoteIndex } = actions;
