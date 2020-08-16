@@ -1,4 +1,4 @@
-const authApi = {
+const authAPI = {
   login: (params) => {
     const url = '';
     // return axiosClient.get(url, { params });
@@ -11,4 +11,4 @@ const authApi = {
   }
 }
 
-export default authApi;
+export default authAPI;
