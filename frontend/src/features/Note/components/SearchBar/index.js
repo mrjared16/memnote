@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
-import { Input } from "antd";
+import { Input, Space } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import './SearchBar.scss';
 
 function SearchBar(props) {
   const { initialValue, onSearchTermChange } = props;
@@ -13,7 +15,13 @@ function SearchBar(props) {
     }
     typingTimeoutRef.current = setTimeout(() => onSearchTermChange(newValue), 300);
   };
-  return <Input value={input} onChange={handleInputChange} />;
+  return (
+    <div className="search-bar">
+      <SearchOutlined style={{ color: "#9DA39B" }} />
+      <Input value={input} onChange={handleInputChange} placeholder="Search"/>
+    </div>
+
+  );
 }
 
 export default SearchBar;
