@@ -10,6 +10,7 @@ import SearchResult from "../SearchResult";
 import Loading from "../Loading";
 import SearchBar from "../SearchBar";
 import ListTag from "../ListTag";
+import noteAPI from "../../../../api/noteAPI";
 
 function SearchForm(props) {
   const visible = useSelector((state) => state.note.visibleSearchForm);
@@ -39,11 +40,20 @@ function SearchForm(props) {
 
   const [totalResult, setTotalResult] = useState(0);
 
-  const [tags, setTags] = useState([{ name: "Tag1" }]);
-
-  const handleCloseTag = removedTag => {
-    setTags(tags.filter(tag => tag !== removedTag))
+  const handleRemoveTag = (removedTag) => {
+    setFilterTags(filterTags.filter((tag) => tag !== removedTag));
+    resetSearch();
   };
+
+  const handleAddTag = ({ tag }) => {
+    // console.log(filterTags)
+    if (tag && filterTags.indexOf(tag) === -1) {
+      setFilterTags([...filterTags, tag]);
+      resetSearch();
+    }
+  };
+
+  // const handleEditTag =
 
   const handleCancel = () => {
     dispatch(setVisibleSearchForm(false));
@@ -84,30 +94,8 @@ function SearchForm(props) {
     console.log(index, sortIndex);
     if (sortIndex != index) {
       setSortIndex(sortOption.key);
+      resetSearch();
     }
-    resetSearch();
-  };
-
-  const searchApi = (params) => {
-    console.log("Search ", params);
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const data = [];
-
-        for (let i = 0; i < numberOfResult; i++) {
-          data.push({
-            title: "Note",
-          });
-        }
-
-        const res = {
-          result: data,
-          total: 30,
-        };
-        resolve(res);
-      }, 1000);
-    });
   };
 
   // debounce
@@ -135,8 +123,7 @@ function SearchForm(props) {
 
     if (searchTerm) {
       setIsLoading(true);
-
-      searchApi(getSearchParams()).then((r) => {
+      noteAPI.search(getSearchParams()).then((r) => {
         setResultItem(r.result);
         setTotalResult(r.total);
         setIsLoading(false);
@@ -191,7 +178,11 @@ function SearchForm(props) {
               content={filterContent}
               switchContent={handleSwitchFilter(setFilterContent)}
             />
-            <ListTag listTags={tags} onRemoveTag={handleCloseTag}/> 
+            <ListTag
+              listTags={filterTags}
+              onRemove={handleRemoveTag}
+              onAdd={handleAddTag}
+            />
           </Col>
         </Row>
       </div>
