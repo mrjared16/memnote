@@ -16,7 +16,6 @@ const { Content } = Layout;
 let key = 0;
 
 const createNote = () => {
-  console.log("create instance");
   return {
     id: `id${key++}`,
     title: `title${key}`,
@@ -111,7 +110,7 @@ function LeftSidebar() {
           <Button
             className="search-btn"
             onClick={openSearchForm}
-            icon={<SearchOutlined style={{ color: "#9DA39B" }} />}
+            icon={<SearchOutlined style={{ color: 'inherit' }} />}
             label="Search"
           />
 
@@ -130,15 +129,15 @@ function LeftSidebar() {
           />
 
           <Button
-            className="add-btn btn-transparent"
-            onClick={() => {}}
+            className="add-btn"
+            onClick={() => { }}
             icon={<PlusCircleOutlined />}
             label="Add Note"
           />
 
           <Button
-            className="trash-btn btn-transparent"
-            onClick={() => {}}
+            className="trash-btn"
+            onClick={() => { }}
             icon={<DeleteOutlined />}
             label="Trash"
           />
