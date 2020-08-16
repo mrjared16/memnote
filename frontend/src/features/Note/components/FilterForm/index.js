@@ -21,7 +21,7 @@ function FilterForm(props) {
   if (data[0].value === false) data[1].disabled = true;
   if (data[1].value === false) data[0].disabled = true;
 
-  console.log(data);
+  // console.log(data);
 
   const filterItem = ({ name, value, setter, disabled = false }) => {
     return (
