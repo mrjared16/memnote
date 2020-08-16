@@ -8,8 +8,8 @@ import {
 import Button from "../Button";
 import "./SortButton.scss";
 
-const menu = (sortOptions) => (
-  <Menu>
+const menu = (sortOptions, onSortOptionChange) => (
+  <Menu onClick={onSortOptionChange}>
     {sortOptions.map(({ name }, index) => {
       return (
         <Menu.Item key={index}
@@ -25,7 +25,7 @@ const menu = (sortOptions) => (
 function SortButton(props) {
   const { sortOptions, onSortOptionChange } = props;
   return (
-    <Dropdown overlay={menu(sortOptions)} trigger={["click"]}>
+    <Dropdown overlay={menu(sortOptions, onSortOptionChange)} trigger={["click"]}>
       <Button
         label="Sort"
         icon={<SortDescendingOutlined style={{ color: "#9DA39B" }} />}
