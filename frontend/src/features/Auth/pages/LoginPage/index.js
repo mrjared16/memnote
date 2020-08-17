@@ -5,7 +5,7 @@ import LoginForm from "../../components/LoginForm";
 import { setToken } from "../../authSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import authApi from "../../../../api/authApi";
+import authAPI from "../../../../api/authAPI";
 
 function LoginPage(props) {
   const dispatch = useDispatch();
@@ -13,7 +13,7 @@ function LoginPage(props) {
 
   const handleLogin = async (values) => {
     const { username, password } = values;
-    const response = await authApi.login({
+    const response = await authAPI.login({
       username,
       password,
     });

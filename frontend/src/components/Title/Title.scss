@@ -1,5 +1,6 @@
+$default-font-color: rgba(255, 255, 255, 0.9);
 .title {
-  color: #FEF5F5;
+  color: $default-font-color;
   // text-align: center;
   // margin: 20px 0px;
 }

@@ -1,29 +1,50 @@
-.ant-layout, .ant-menu, .ant-tree {
+$default-font-color: rgba(255, 255, 255, 0.9);
+
+.ant-layout,
+.ant-menu,
+.ant-tree {
   background-color: #242426;
 }
 $item-selected-color: rgb(71, 76, 80);
 
 .ant-layout-sider {
   background-color: #242426;
-  
-  .ant-menu, .ant-tree-title {
+
+  .ant-menu,
+  .ant-tree-title {
     color: rgba(255, 255, 255, 0.6);
     border: none;
   }
-  .ant-tree 
-  {
-    color: rgba(255, 255, 255, 0.6);
-    .ant-tree-node-content-wrapper:hover, .ant-tree-node-content-wrapper:active, .ant-tree-node-selected 
-    {
-      background-color: $item-selected-color;
+  .ant-tree {
+    .ant-tree-node-content-wrapper {
+      width: 100%;
+      &:hover {
+        background-color: inherit !important;
+      }
+    }
+    .ant-tree-treenode {
+      color: rgba(255, 255, 255, 0.6);
+      width: 100%;
+      &:hover,
+      &:active {
+        background-color: $item-selected-color;
+      }
     }
   }
 }
-.ant-menu, .ant-layout,
-.ant-typography, h1.ant-typography, .ant-tree-title {
-  color: #fef5f5;
+.ant-menu,
+.ant-layout,
+.ant-typography,
+h1.ant-typography,
+.ant-tree-title {
+  color: $default-font-color;
 }
 
 .sidebar {
   padding: 5px;
+}
+.main-content {
+  .ant-row {
+    flex-flow: row nowrap;
+  }
 }

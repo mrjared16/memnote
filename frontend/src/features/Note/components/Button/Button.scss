@@ -1,11 +1,26 @@
+$button-text-color: rgba(255, 255, 255, 0.6);
+$item-selected-color: rgb(71, 76, 80);
 .ant-btn {
   display: flex;
   justify-items: flex-start;
   align-items: center;
+  // border: none;
+  &:hover,
+  &:active,
+  &:focus {
+    background: $item-selected-color;
+    color: inherit !important;
+  }
 }
-
-// .custom-button, .custom-button:hover, .custom-button:active {
-//   background-color: transparent !important;
-//   color: #9DA39B !important;
-//   border-color: #9DA39B;
+// .ant-btn:hover {
+//   color: #ffffff !important;
+//   background-color: grey;
+//   opacity: 0.5;
 // }
+
+.custom-button {
+  background-color: transparent;
+  border: 0;
+  color: $button-text-color;
+}
+}

@@ -15,26 +15,25 @@ function UserMenu(props) {
 
   const menu = (
     <Menu>
-      <Menu.Item icon={<UserOutlined style={{ color: "#9DA39B" }} />}>
-        <a className="text-in-dropdown">Account Setting</a>
+      <Menu.Item icon={<UserOutlined style={{ color: "inherit" }} />}>
+        <span>Account Setting</span>
       </Menu.Item>
-      <Menu.Item icon={<LogoutOutlined style={{ color: "#9DA39B" }} />}>
-        <a className="text-in-dropdown" onClick={logout}>
+      <Menu.Item icon={<LogoutOutlined style={{ color: "inherit" }} />}>
+        <span>
           Logout
-        </a>
+        </span>
       </Menu.Item>
     </Menu>
   );
 
   return (
-    <div className='user-menu-container'>
+    <div className='user-menu'>
       <Dropdown overlay={menu} trigger={["click"]}>
-        <a
-          className="ant-dropdown-link user-menu"
+        <span
           onClick={(e) => e.preventDefault()}
         >
           Username <DownOutlined />
-        </a>
+        </span>
       </Dropdown>
     </div>
   );
