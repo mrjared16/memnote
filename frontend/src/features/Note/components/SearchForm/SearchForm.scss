@@ -1,3 +1,5 @@
+$default-font-color: rgba(255, 255, 255, 0.9);
+
 .ant-modal-content {
   background-color: #2e2f31;
 }
@@ -8,8 +10,9 @@
 }
 
 .search-btn-submit {
-  color: #fef5f5;
-  background-color: #2c7ff6;
+
+  color: $default-font-color;
+  background-color: #2C7FF6;
   border-radius: 10px;
   border: 0;
 }

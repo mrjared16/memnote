@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./LeftSidebar.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
@@ -10,41 +10,23 @@ import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import ListNote from "../../components/ListNote";
 import Button from "../../components/Button";
 import { useHistory } from "react-router-dom";
+import noteAPI from "../../../../api/noteAPI";
 
 const { Content } = Layout;
-
-let key = 0;
-
-const createNote = () => {
-  console.log("create instance");
-  return {
-    id: `id${key++}`,
-    title: `title${key}`,
-  };
-};
-
-const mockupNoteAPI = (delay = 1000) => {
-  return new Promise((resolve) => {
-    const result = [createNote(), createNote()];
-    setTimeout(() => {
-      resolve(result);
-    }, delay);
-  });
-};
 
 
 function LeftSidebar() {
   const getInitNote = (delay) => {
-    const response = mockupNoteAPI(delay);
+    const response = noteAPI.getChildren();
     return response;
   };
 
   const getChildren = async (noteId) => {
-    const response = mockupNoteAPI();
+    const response = noteAPI.getChildren();
     return response;
   };
 
-  const addKey = (listNote) => {
+  const addKey = useCallback((listNote) => {
     return listNote.map((note) => {
       note.key = note.id;
       if (note.children && Array.isArray(note.children)) {
@@ -52,7 +34,7 @@ function LeftSidebar() {
       }
       return note;
     });
-  };
+  });
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -111,7 +93,7 @@ function LeftSidebar() {
           <Button
             className="search-btn"
             onClick={openSearchForm}
-            icon={<SearchOutlined style={{ color: "#9DA39B" }} />}
+            icon={<SearchOutlined style={{ color: 'inherit' }} />}
             label="Search"
           />
 
@@ -130,15 +112,15 @@ function LeftSidebar() {
           />
 
           <Button
-            className="add-btn btn-transparent"
-            onClick={() => {}}
+            className="add-btn"
+            onClick={() => { }}
             icon={<PlusCircleOutlined />}
             label="Add Note"
           />
 
           <Button
-            className="trash-btn btn-transparent"
-            onClick={() => {}}
+            className="trash-btn"
+            onClick={() => { }}
             icon={<DeleteOutlined />}
             label="Trash"
           />

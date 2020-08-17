@@ -1,19 +1,29 @@
-.user-menu-container {
-  margin: 20px 0px;
-  text-align: center;
-}
+$button-text-color: rgba(255, 255, 255, 0.6);
+$default-font-color: rgba(255, 255, 255, 0.9);
 
 .user-menu {
-  color: #9DA39B;
-  font-size: 20px;
+  margin: 20px 0px;
+  color: $default-font-color;
+  text-align: center;
+  span {
+    &:hover {
+      cursor: pointer;
+      color: $default-font-color;
+    }
+    color: $button-text-color;
+    font-size: 20px;
+  }
+}
+.ant-dropdown-menu-item {
+  color: $button-text-color;
 }
 
 .ant-dropdown-menu {
-  background-color: #2E2F31;
+  background-color: #2e2f31;
 }
 
 .ant-dropdown-menu a {
-  color: #9DA39B !important;
+  color: $button-text-color !important;
 }
 
 .ant-dropdown-menu-item:hover {
