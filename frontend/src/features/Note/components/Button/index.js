@@ -4,7 +4,7 @@ import { Popover } from "antd";
 import * as Style from 'antd';
 
 function Button(props) {
-  const { icon, label, onClick, className, popover = false, placement = 'bottom', trigger = 'hover', type} = props;
+  const { icon, label, onClick, className, popover = false, placement = "bottom", content, trigger="hover", type } = props;
   const button = (
     <Style.Button className={className + " custom-button"} onClick={onClick} htmlType={type}>
       {icon}

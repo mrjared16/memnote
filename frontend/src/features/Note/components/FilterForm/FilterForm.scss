@@ -1,0 +1,19 @@
+.filter-container {
+  width: 100%;
+  .ant-row {
+    margin-bottom: 10px;
+  }
+}
+
+.filter-title, .filter-content {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0px 10px;
+}
+
+.filter-container {
+  span {
+    font-size: 17px;
+    color: #9DA39B;
+  }
+}
