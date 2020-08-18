@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LoginPage.scss";
-import { Row, Col } from "antd";
+import { Row, Col, Alert, message } from "antd";
 import LoginForm from "../../components/LoginForm";
 import { setToken } from "../../authSlice";
 import { useDispatch } from "react-redux";
@@ -10,27 +10,27 @@ import authApi from "../../../../api/authApi";
 function LoginPage(props) {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [notify, setNotify] = useState('');
 
-  const handleLogin = async (values) => {
+  const handleLogin = (values) => {
     const { username, password } = values;
-    const response = await authApi.login({
+    const params = {
       username,
-      password,
-    });
-    const loginCheck = true;
-    if (!loginCheck) {
-      return;
+      password
     }
-
-    dispatch(setToken("token"));
-    history.push("/");
+    setNotify('');
+    authApi.login(params).then(res => {
+      setNotify(res);
+      // dispatch(setToken(res));
+      // history.push('/');
+    })
   };
 
   return (
     <Row className="login-row">
       <Col span={8}></Col>
       <Col span={8} className="login-col">
-        <LoginForm onSubmit={handleLogin} />
+        <LoginForm onSubmit={handleLogin} notify={notify}/>
       </Col>
       <Col span={8}></Col>
     </Row>

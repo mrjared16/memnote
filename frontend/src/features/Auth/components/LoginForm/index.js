@@ -2,7 +2,7 @@ import React from "react";
 import Title from "../../../../components/Title";
 import InputField from "../../../../components/InputField";
 import { Link } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Alert } from "antd";
 import "./LoginForm.scss";
 import { Formik, Form, FastField } from "formik";
 
@@ -11,7 +11,7 @@ function LoginForm(props) {
     username: "",
     password: "",
   };
-  const { onSubmit } = props;
+  const { onSubmit, notify } = props;
 
   return (
     <div>
@@ -20,6 +20,8 @@ function LoginForm(props) {
           //const { values } = formikProps;
           return (
             <Form className='login-form'>
+              {notify && <Alert message={notify} type="error" showIcon closable  className="notify" />}
+
               <Title name="Login" />
               
               <FastField
