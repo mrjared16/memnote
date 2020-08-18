@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import noteAPI from '../../api/noteAPI';
 
 const initialState = {
-  visibleSearchForm: false,
+  isSearchFormVisible: false,
   favoriteNotes: [],
   rootNotes: [],
   notesInView: [{
@@ -18,8 +18,14 @@ const initialState = {
 };
 
 export const fetchNote = createAsyncThunk('note/noteLoading', (id) =>
+  // async () => {
+  //   console.log('fetching');
+  //   const { note } = await noteAPI.getNote(id);
+  //   console.log(note);
+  //   return note;
+  // }
   noteAPI.getNote(id)
-    .then(response => response.data)
+    .then(({ note }) => note)
     .catch(error => error)
 );
 
@@ -27,26 +33,32 @@ const note = createSlice({
   name: "note",
   initialState,
   reducers: {
-    setVisibleSearchForm: (state, action) => {
-      state.visibleSearchForm = action.payload;
+    setSearchFormVisible: (state, action) => {
+      state.isSearchFormVisible = action.payload;
     },
     setActiveNoteIndex: (state, action) => {
       state.activeNoteIndex = action.payload;
     },
-    setNote: (state, { field, newValue }) => {
-      state.notesInView[state.activeNoteIndex][field] = newValue;
-    }
+    setNoteData: (state, { payload }) => {
+      // console.log('set Note Data', payload);
+      payload.forEach(({ field, newValue }) => {
+        // console.log(field, newValue);
+        state.notesInView[state.activeNoteIndex].data[field] = newValue;
+      });
+    },
   },
   extraReducers: {
     [fetchNote.pending.type]: (state, action) => {
+      console.log('fetching Note loading');
       state.notesInView[state.activeNoteIndex].loading = true;
     },
     [fetchNote.rejected.type]: (state, action) => {
-      console.log('rejected');
+      console.log('fetching Note rejected');
       state.notesInView[state.activeNoteIndex].loading = false;
       state.notesInView[state.activeNoteIndex].error = action.payload;
     },
     [fetchNote.fulfilled.type]: (state, action) => {
+      console.log('fetching Note loading done', action.payload);
       state.notesInView[state.activeNoteIndex].loading = false;
       state.notesInView[state.activeNoteIndex].data = action.payload;
     }
@@ -56,5 +68,5 @@ const note = createSlice({
 
 
 const { reducer, actions } = note;
-export const { setVisibleSearchForm, setNote, setActiveNoteIndex } = actions;
+export const { setSearchFormVisible, setNoteData, setActiveNoteIndex } = actions;
 export default reducer;
