@@ -20,9 +20,10 @@ function LoginPage(props) {
     }
     setNotify('');
     authApi.login(params).then(res => {
-      setNotify(res);
-      // dispatch(setToken(res));
-      // history.push('/');
+      dispatch(setToken(res));
+      history.push('/');
+    }).catch((err) => {
+      setNotify(err.response.data.message);
     })
   };
 
