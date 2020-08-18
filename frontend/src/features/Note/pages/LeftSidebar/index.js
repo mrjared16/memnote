@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./LeftSidebar.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { setSearchFormVisible } from "../../noteSlice";
+import { setSearchFormVisible, fetchFavoriteNotes, fetchTopLevelNotes, setNotes, setFavoriteNotes, setTopLevelNotes } from "../../noteSlice";
 import UserMenu from "../../components/UserMenu";
 import SearchForm from "../../components/SearchForm";
 import { Layout, Menu } from "antd";
@@ -11,17 +11,19 @@ import ListNote from "../../components/ListNote";
 import Button from "../../components/Button";
 import { useHistory } from "react-router-dom";
 import noteAPI from "../../../../api/noteAPI";
-import { useParams } from "react-router-dom";
-
+import { useSelector } from 'react-redux';
 const { Content } = Layout;
 
 
 function LeftSidebar(props) {
-  const dispatch = useDispatch();
   const history = useHistory();
 
-  const [favoriteNotes, setFavoriteNotes] = useState([]);
-  const [rootNotes, setRootNotes] = useState([]);
+  const dispatch = useDispatch();
+  const favoriteNotes = useSelector(state => state.note.favoriteNotes);
+  const topLevelNotes = useSelector(state => state.note.topLevelNotes);
+
+  // console.log('favorite: ', favoriteNotes);
+  // console.log('top level: ', topLevelNotes);
 
   const handleOpenSearchForm = () => {
     dispatch(setSearchFormVisible(true));
@@ -44,16 +46,21 @@ function LeftSidebar(props) {
   };
 
   const addKey = useCallback((listNote = []) => {
+    // console.log(listNote);
+    if (!Array.isArray(listNote))
+      return [];
     return listNote.map((note) => {
-      note.key = note.id;
+      const modifyNote = { ...note };
+      modifyNote.key = modifyNote.id;
       if (note.children && Array.isArray(note.children)) {
-        note.children = addKey(note.children);
+        modifyNote.children = addKey(note.children);
       }
-      return note;
+      // console.log(modifyNote);
+      return modifyNote;
     });
   });
 
-  const handleLoadChildren = (setter) => {
+  const handleLoadChildren = ({ isFavorite = false } = {}) => {
     const getChildren = async (noteId) => {
       const { result } = await noteAPI.getChildren(noteId);
       return result;
@@ -61,7 +68,7 @@ function LeftSidebar(props) {
 
     function updateTreeData(list, key, children) {
       return list.map((node) => {
-        if (node.key === key) {
+        if (node.id === key) {
           return { ...node, children };
         }
         if (node.children) {
@@ -79,25 +86,23 @@ function LeftSidebar(props) {
       if (children)
         return;
 
-      let newChildren = null;
-      newChildren = await getChildren(key);
-      newChildren = addKey(newChildren);
-
-      setter((origin) => updateTreeData(origin, key, newChildren));
+      const noteID = key;
+      let newChildren = await getChildren(noteID);
+      if (!newChildren.length)
+        return;
+      let origin = isFavorite ? favoriteNotes.data : topLevelNotes.data;
+      let newTree = updateTreeData([...origin], key, newChildren);
+      const setter = isFavorite ? setFavoriteNotes : setTopLevelNotes;
+      console.log('new tree', newTree);
+      dispatch(setter({
+        newData: newTree
+      }))
     };
   };
 
   useEffect(() => {
-    async function getFavoriteNotes() {
-      const { result } = await noteAPI.getFavoriteNotes();
-      setFavoriteNotes(addKey(result));
-    }
-    async function getRootNotes() {
-      const { result } = await noteAPI.getNotes();
-      setRootNotes(addKey(result));
-    }
-    getRootNotes();
-    getFavoriteNotes();
+    dispatch(fetchFavoriteNotes());
+    dispatch(fetchTopLevelNotes());
   }, []);
 
   return (
@@ -115,16 +120,18 @@ function LeftSidebar(props) {
 
           <ListNote
             title="My Favorite"
-            data={favoriteNotes}
+            data={addKey(favoriteNotes.data)}
+            isLoading={favoriteNotes.loading}
             handleSelect={handleSelectNote}
-            handleLoad={handleLoadChildren(setFavoriteNotes)}
+            handleLoad={handleLoadChildren({ isFavorite: true })}
           />
 
           <ListNote
             title="My Note"
-            data={rootNotes}
+            data={addKey(topLevelNotes.data)}
+            isLoading={favoriteNotes.loading}
             handleSelect={handleSelectNote}
-            handleLoad={handleLoadChildren(setRootNotes)}
+            handleLoad={handleLoadChildren()}
           />
 
           <Button

@@ -22,7 +22,7 @@ const listTag = () => {
 }
 
 const mockupRequest = (result) => new Promise(resolve => {
-    console.log(result);
+    console.log('API response:', result);
     setTimeout(() => resolve(result), 1000);
 })
 
