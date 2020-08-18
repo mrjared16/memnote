@@ -39,6 +39,7 @@ function RegisterForm(props) {
                 component={InputField}
                 name="password"
                 placeholder="Password"
+                type="password"
               />
 
               <FastField

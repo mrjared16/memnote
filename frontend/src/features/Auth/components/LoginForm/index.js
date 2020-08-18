@@ -42,7 +42,7 @@ function LoginForm(props) {
               </Link>
               <div className="loginBtn-signup">
                 <Button className="login-btn" htmlType="submit">Login</Button>
-                <Link className="signup">Don't have an account? Sign up</Link>
+                <Link className="signup" to="/register">Don't have an account? Sign up</Link>
               </div>
             </Form>
           );
