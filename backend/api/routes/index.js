@@ -22,7 +22,7 @@ router.post("/login", async function (req, res, next) {
 router.post("/logout", function (req, res, next) {});
 
 router.post("/register", function (req, res, next) {
-  const { username, password, email } = req.query;
+  const { username, password, email } = req.body.params;
   userController.register(username, password, email);
   return res.status(201).send({
     token:
