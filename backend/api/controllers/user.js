@@ -2,7 +2,6 @@ const queries = require("../queries");
 
 exports.login = async (username, password) => {
   const res = await queries.getUserByUsername(username);
-  console.log("user la: ", res);
   if (res.length == 0) return false;
   const passwordDB = res[0].password;
   if (password == passwordDB) {
