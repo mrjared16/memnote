@@ -1,3 +1,6 @@
+const queries = require('../queries');
+queries.getAll().then(results => res.send(results))
+
 exports.login = (req, res, next) => {
 
 }
