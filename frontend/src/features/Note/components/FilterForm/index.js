@@ -17,27 +17,19 @@ function FilterForm(props) {
       setter: switchContent,
     },
   ];
-
-  if (data[0].value === false) data[1].disabled = true;
-  if (data[1].value === false) data[0].disabled = true;
-
-  // console.log(data);
+  
+  data[0].disabled = !(data[1].value);
+  data[1].disabled = !(data[0].value);
 
   const filterItem = ({ name, value, setter, disabled = false }) => {
     return (
-      <Row key={name}>
-        <Col span={8} className="filter-title">
+      <Row className='filter-item' key={name}>
+        <Col flex='auto' className="filter-name">
           <span>{name}</span>
         </Col>
-        {disabled ? (
-          <Col span={16}>
-            <Switch onChange={setter} checked={value} disabled />
-          </Col>
-        ) : (
-          <Col span={16}>
-            <Switch onChange={setter} checked={value} />
-          </Col>
-        )}
+        <Col className='fitler-toggle'>
+          <Switch onChange={setter} checked={value} disabled={disabled} />
+        </Col>
       </Row>
     );
   };

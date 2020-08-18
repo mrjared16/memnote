@@ -17,7 +17,7 @@ function SearchBar(props) {
   };
   return (
     <div className="search-bar">
-      <SearchOutlined style={{ color: "#9DA39B" }} />
+      <SearchOutlined style={{ color: "#9DA39B"}} />
       <Input value={input} onChange={handleInputChange} placeholder="Search"/>
     </div>
 

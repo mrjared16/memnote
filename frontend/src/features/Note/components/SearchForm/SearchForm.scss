@@ -17,17 +17,9 @@ $default-font-color: rgba(255, 255, 255, 0.9);
   border: 0;
 }
 
-.search-form {
-  padding: 5px 10px;
-
-  .search-input {
-    padding-right: 20px;
-    input {
-      background-color: transparent;
-      border: 0;
-    }
-  }
-
+.search-form-container {
+  // padding: 5px 10px;
+  color: $default-font-color;
   .sort-btn {
     background-color: transparent;
     border: 0;
@@ -35,8 +27,7 @@ $default-font-color: rgba(255, 255, 255, 0.9);
     font-weight: bold;
   }
 
-  .filter-container {
-    padding-left: 20px;
+  .filter {
     border-left-width: 1px;
     border-left-style: solid;
     border-left-color: rgb(55, 60, 63);
