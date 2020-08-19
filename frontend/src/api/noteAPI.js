@@ -51,7 +51,6 @@ const noteAPI = {
                 isFavorite: true,
                 tags: listTag(),
                 children: listNote(),
-                children: [],
                 lastEdited: Date.now(),
                 isDeleted: false
             }
@@ -92,6 +91,19 @@ const noteAPI = {
         return mockupRequest({
             newNoteID: `id${key++}`
         });
+    },
+    updateNote: ({ }) => {
+
+    },
+    deleteNote: (id) => {
+        // delete /notes/id
+        console.log('delete note ', id);
+        return mockupRequest();
+    },
+    getDeleteNotes: () => {
+        return mockupRequest({
+            result: [createNote(), createNote()]
+        })
     }
 }
 

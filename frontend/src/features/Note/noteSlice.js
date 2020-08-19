@@ -37,15 +37,21 @@ export const fetchNote = createAsyncThunk('note/noteLoading', (id) =>
     .catch(error => error)
 );
 
-export const fetchFavoriteNotes = createAsyncThunk('note/favoriteNotesLoading', (id) =>
+export const fetchFavoriteNotes = createAsyncThunk('note/favoriteNotesLoading', () =>
   noteAPI.getFavoriteNotes()
     .then(({ result }) => result)
     .catch(error => error)
 );
 
-export const fetchTopLevelNotes = createAsyncThunk('note/topLevelNotesLoading', (id) =>
+export const fetchTopLevelNotes = createAsyncThunk('note/topLevelNotesLoading', () =>
   noteAPI.getNotes()
     .then(({ result }) => result)
+    .catch(error => error)
+);
+
+export const updateCurrentNote = createAsyncThunk('note/noteLoading', () =>
+  noteAPI.updateNote({})
+    .then(({ note }) => note)
     .catch(error => error)
 );
 

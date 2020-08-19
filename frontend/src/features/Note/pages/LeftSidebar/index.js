@@ -35,15 +35,9 @@ function LeftSidebar(props) {
     console.log('redirect to new note');
   }
 
-  const handleSelectNote = (IDs, info) => {
-    // console.log(info);
-    const { selected = false } = info;
-    if (!selected)
-      return;
-    const id = IDs[0];
-    console.log("redirect to note ", id);
-    history.push(`/note/${id}`);
-  };
+  const handleNavigateToTrash = async () => {
+    history.push(`/trash`);
+  }
 
   const addKey = useCallback((listNote = []) => {
     // console.log(listNote);
@@ -59,7 +53,7 @@ function LeftSidebar(props) {
       return modifyNote;
     });
   });
-
+  
   const handleLoadChildren = ({ isFavorite = false } = {}) => {
     const getChildren = async (noteId) => {
       const { result } = await noteAPI.getChildren(noteId);
@@ -93,7 +87,7 @@ function LeftSidebar(props) {
       let origin = isFavorite ? favoriteNotes.data : topLevelNotes.data;
       let newTree = updateTreeData([...origin], key, newChildren);
       const setter = isFavorite ? setFavoriteNotes : setTopLevelNotes;
-      console.log('new tree', newTree);
+      // console.log('new tree', newTree);
       dispatch(setter({
         newData: newTree
       }))
@@ -122,7 +116,6 @@ function LeftSidebar(props) {
             title="My Favorite"
             data={addKey(favoriteNotes.data)}
             isLoading={favoriteNotes.loading}
-            handleSelect={handleSelectNote}
             handleLoad={handleLoadChildren({ isFavorite: true })}
           />
 
@@ -130,7 +123,6 @@ function LeftSidebar(props) {
             title="My Note"
             data={addKey(topLevelNotes.data)}
             isLoading={favoriteNotes.loading}
-            handleSelect={handleSelectNote}
             handleLoad={handleLoadChildren()}
           />
 
@@ -143,7 +135,7 @@ function LeftSidebar(props) {
 
           <Button
             className="trash-btn"
-            onClick={() => { }}
+            onClick={handleNavigateToTrash}
             icon={<DeleteOutlined />}
             label="Trash"
           />
