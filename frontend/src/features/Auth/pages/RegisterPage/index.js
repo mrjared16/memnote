@@ -5,7 +5,7 @@ import RegisterForm from "../../components/RegisterForm";
 import { setToken } from "../../authSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import authApi from "../../../../api/authApi";
+import authAPI from "../../../../api/authAPI";
 
 function RegisterPage(props) {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ function RegisterPage(props) {
       password,
       email
     }
-    authApi.register(params).then(res => {
+    authAPI.register(params).then(res => {
       dispatch(setToken(res));
       history.push('/');
     })
