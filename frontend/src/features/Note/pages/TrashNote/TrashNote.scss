@@ -1,0 +1,9 @@
+$default-font-color: rgba(255, 255, 255, 0.9);
+.trash-note {
+  background-color: #2a2a2c;
+  .ant-list-item {
+    color: $default-font-color;
+  }
+  height: 100%;
+  padding: 20px 40px;
+}
