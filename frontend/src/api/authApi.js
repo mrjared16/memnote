@@ -1,13 +1,13 @@
+import axiosClient from './axiosClient';
+
 const authAPI = {
   login: (params) => {
-    const url = '';
-    // return axiosClient.get(url, { params });
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(params);
-        resolve();
-      }, 1000);
-    });
+    const url = '/login';
+    return axiosClient.post(url, { params });
+  },
+  register: (params) => {
+    const url = '/register';
+    return axiosClient.post(url, { params });
   }
 }
 
