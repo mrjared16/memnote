@@ -1,50 +1,51 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Col, Row } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import NoteView from '../../components/NoteView';
 import './NoteViewer.scss';
+import { fetchNote, setNoteData } from '../../noteSlice';
 
 function NoteViewer(props) {
-    // const dispatch = useDispatch();
-    // const { id1 } = useParams();
-    const [leftNote, setLeftNote] = useState({
-        id: 'id1',
-        title: 'Title',
-        content: `# abc`,
-        isFavorite: true,
-        lastEdited: Date.now(),
-        tags: [{ id: '1', name: 'tag' }, { id: '1', name: 'tag' }],
-        children: ['id1', 'id2'],
-    });
-    const [rightNote, setRightNote] = useState({});
-    // const changeTitleHandle = (e) => {
-    //     const newTitle = e.target.value;
-    //     setLeftNote(origin => ({
-    //         ...origin,
-    //         title: newTitle
-    //     }));
-    // }
-
+    const dispatch = useDispatch();
+    const noteData = useSelector(state => state.note.notesInView[0]);
+    // console.log(noteData);
+    const { id } = useParams();
+    useEffect(() => {
+        dispatch(fetchNote(id));
+    }, [id]);
+    const setNote = (pair) => dispatch(setNoteData(pair));
+    console.log('note-viewer note id = ', id);
+    // const [leftNote, setLeftNote] = useState({
+    //     id: 'id1',
+    //     title: 'Title',
+    //     content: `# abc`,
+    //     isFavorite: true,
+    //     lastEdited: Date.now(),
+    //     tags: [{ id: '1', name: 'tag' }, { id: '1', name: 'tag' }],
+    //     children: ['id1', 'id2'],
+    // });
+    // const [rightNote, setRightNote] = useState({});
 
     const handleContentChange = (setter) => (e) => {
         const newContent = e.target.value;
-        setter(origin => ({
-            ...origin,
-            content: newContent
-        }));
+        const field = 'content';
+        const newValue = newContent;
+        setter([{ field, newValue }]);
     }
     const handleToggleFavorite = (setter) => (e) => {
-        setter(origin => ({
-            ...origin,
-            isFavorite: !origin.isFavorite
-        }));
+        const { isFavorite } = noteData.data;
+        const field = 'isFavorite';
+        const newValue = !isFavorite;
+        setter([{ field, newValue }]);
     }
     const handleTitleChange = (setter) => (string) => {
-        console.log('change1');
+        // console.log('change1');
         const newTitle = string;
-        setter(origin => ({
-            ...origin,
-            title: newTitle
-        }));
+        const field = 'title';
+        const newValue = newTitle;
+        setter([{ field, newValue }]);
+
     }
     // const [activePane, setActivePane] = useState(null);
     // const [rightNote, setRightNote] = useState(null);
@@ -58,21 +59,22 @@ function NoteViewer(props) {
     }
     const handleOpenSplitPane = (e) => {
         setSplitMode(true);
-        setRightNote({ ...leftNote });
+        // setRightNote({ ...leftNote });
     }
-    const handleLeftNoteContentChange = handleContentChange(setLeftNote);
-    const handleRightNoteContentChange = handleContentChange(setRightNote);
+    const handleLeftNoteContentChange = handleContentChange(setNote);
+    // const handleRightNoteContentChange = handleContentChange(setNote);
 
-    const handleLeftNoteTitleChange = handleTitleChange(setLeftNote);
-    const handleRightNoteTitleChange = handleTitleChange(setRightNote);
+    const handleLeftNoteTitleChange = handleTitleChange(setNote);
+    // const handleRightNoteTitleChange = handleTitleChange(setNote);
 
-    const handleLeftNoteToggleFavorite = handleToggleFavorite(setLeftNote);
-    const handleRightNoteToggleFavorite = handleToggleFavorite(setRightNote);
+    const handleLeftNoteToggleFavorite = handleToggleFavorite(setNote);
+    // const handleRightNoteToggleFavorite = handleToggleFavorite(setNote);
     return (
         <Row style={{ height: '100%' }} gutter={[5]}>
             <Col className='viewer-container'>
                 <NoteView
-                    note={leftNote}
+                    note={noteData.data}
+                    isLoading={noteData.loading}
                     splitMode={splitMode}
                     handleEvent={{
                         handleCloseSplitPane,
@@ -86,18 +88,34 @@ function NoteViewer(props) {
             </Col>
             {splitMode &&
                 <Col className='viewer-container'>
+
                     <NoteView
-                        note={rightNote}
+                        note={noteData.data}
+                        isLoading={false}
                         splitMode={splitMode}
                         handleEvent={{
                             handleCloseSplitPane
+                            // handleOpenSplitPane
                         }}
                         handleChange={{
-                            handleContentChange: handleRightNoteContentChange,
-                            handleTitleChange: handleRightNoteTitleChange,
-                            handleToggleFavorite: handleRightNoteToggleFavorite
+                            handleContentChange: handleLeftNoteContentChange,
+                            handleTitleChange: handleLeftNoteTitleChange,
+                            handleToggleFavorite: handleLeftNoteToggleFavorite
                         }} />
                 </Col>
+                // <Col className='viewer-container'>
+                //     <NoteView
+                //         note={rightNote}
+                //         splitMode={splitMode}
+                //         handleEvent={{
+                //             handleCloseSplitPane
+                //         }}
+                //         handleChange={{
+                //             handleContentChange: handleRightNoteContentChange,
+                //             handleTitleChange: handleRightNoteTitleChange,
+                //             handleToggleFavorite: handleRightNoteToggleFavorite
+                //         }} />
+                // </Col>
             }
         </Row>
     );

@@ -2,16 +2,17 @@ import React from "react";
 import Title from "../../../../components/Title";
 import InputField from "../../../../components/InputField";
 import { Link } from "react-router-dom";
-import { Button, Alert } from "antd";
-import "./LoginForm.scss";
+import { Button } from "antd";
+import "./RegisterForm.scss";
 import { Formik, Form, FastField } from "formik";
 
-function LoginForm(props) {
+function RegisterForm(props) {
   const initialValues = {
     username: "",
     password: "",
+    email: ""
   };
-  const { onSubmit, notify } = props;
+  const { onSubmit } = props;
 
   return (
     <div>
@@ -19,14 +20,18 @@ function LoginForm(props) {
         {(formikProps) => {
           //const { values } = formikProps;
           return (
-            <Form className='login-form'>
-              {notify && <Alert message={notify} type="error" showIcon closable  className="notify" />}
-
+            <Form className="login-form">
               <Title name="Login" />
-              
+
               <FastField
                 component={InputField}
                 name="username"
+                placeholder="Username"
+              />
+
+              <FastField
+                component={InputField}
+                name="email"
                 placeholder="Email"
               />
 
@@ -37,12 +42,18 @@ function LoginForm(props) {
                 type="password"
               />
 
-              <Link className="forgot-password" href="#">
-                Forgot password?
-              </Link>
+              <FastField
+                component={InputField}
+                name="confirm-password"
+                placeholder="Confirm Password"
+                type="password"
+              />
+
               <div className="loginBtn-signup">
-                <Button className="login-btn" htmlType="submit">Login</Button>
-                <Link className="signup" to="/register">Don't have an account? Sign up</Link>
+                <Button className="login-btn" htmlType="submit">
+                  Register
+                </Button>
+                <Link className="signup" to="/login">Already have an account? Log in</Link>
               </div>
             </Form>
           );
@@ -52,4 +63,4 @@ function LoginForm(props) {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

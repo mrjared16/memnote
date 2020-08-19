@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setVisibleSearchForm } from "../../noteSlice";
+import { setSearchFormVisible } from "../../noteSlice";
 import Modal from "antd/lib/modal/Modal";
 import "./SearchForm.scss";
 import { Row, Col, Input } from "antd";
@@ -13,7 +13,7 @@ import ListTag from "../ListTag";
 import noteAPI from "../../../../api/noteAPI";
 
 function SearchForm(props) {
-  const visible = useSelector((state) => state.note.visibleSearchForm);
+  const visible = useSelector((state) => state.note.isSearchFormVisible);
   const dispatch = useDispatch();
 
   const initialState = {
@@ -40,25 +40,27 @@ function SearchForm(props) {
 
   const [totalResult, setTotalResult] = useState(0);
 
-  const handleRemoveTag = (removedTag) => {
-    setFilterTags(filterTags.filter((tag) => tag !== removedTag));
-    resetSearch();
-  };
-
-  const handleAddTag = ({ tag }) => {
+  const handleAddTag = ({ tagName }) => {
     // console.log(filterTags)
-    if (tag && filterTags.indexOf(tag) === -1) {
-      setFilterTags([...filterTags, tag]);
+    if (tagName && filterTags.map(tag => tag.name).indexOf(tagName) === -1) {
+      setFilterTags([...filterTags, { name: tagName }]);
       resetSearch();
     }
   };
 
+  const handleRemoveTag = (removedTag) => {
+    setFilterTags(filterTags.filter((tag) => tag.name !== removedTag.name));
+    resetSearch();
+  };
+
+
   // const handleEditTag =
 
   const handleCancel = () => {
-    dispatch(setVisibleSearchForm(false));
+    dispatch(setSearchFormVisible(false));
     setNumberOfResult(initialState.numberOfResult);
     setResultItem([]);
+    // setFilterTags([]);
     setTotalResult(0);
   };
   const sortOptions = useMemo(
@@ -91,7 +93,7 @@ function SearchForm(props) {
   };
   const handleSortOptionChange = (sortOption) => {
     const index = sortOption.key;
-    console.log(index, sortIndex);
+    // console.log(index, sortIndex);
     if (sortIndex != index) {
       setSortIndex(sortOption.key);
       resetSearch();
@@ -100,7 +102,6 @@ function SearchForm(props) {
 
   // debounce
   useEffect(() => {
-    console.log("Update search result");
 
     const getSearchParams = () => {
       const sortOptions = [
@@ -122,12 +123,15 @@ function SearchForm(props) {
     };
 
     if (searchTerm) {
+      console.log("Update search result");
       setIsLoading(true);
-      noteAPI.search(getSearchParams()).then((r) => {
-        setResultItem(r.result);
-        setTotalResult(r.total);
+      async function searchNote() {
+        const { result, total } = await noteAPI.searchNote(getSearchParams());
+        setResultItem(result);
+        setTotalResult(total);
         setIsLoading(false);
-      });
+      }
+      searchNote();
     }
   }, [
     searchTerm,
@@ -146,9 +150,9 @@ function SearchForm(props) {
       footer={null}
       width="50%"
     >
-      <div className="search-form">
+      <div className="search-form-container">
         <Row>
-          <Col span={18} className="search-input">
+          <Col flex='5' className="search-form">
             <SearchBar
               initalValue={searchTerm}
               onSearchTermChange={handleSearchTermOnChange}
@@ -163,25 +167,24 @@ function SearchForm(props) {
               listItem={resultItem}
               totalItem={totalResult}
               setNumberOfItem={setNumberOfResult}
+              isLoading={isLoading}
             />
             {totalResult !== 0 ? (
               <span className="total-result">{totalResult} results</span>
             ) : (
-              ""
-            )}
-            {isLoading && <Loading />}
+                ""
+              )}
+            {/* {isLoading && <Loading />} */}
           </Col>
-          <Col span={6} className="filter-container">
+          <Col flex='2' className="filter">
             <FilterForm
               title={filterTitle}
               switchTitle={handleSwitchFilter(setFilterTitle)}
               content={filterContent}
               switchContent={handleSwitchFilter(setFilterContent)}
-            />
-            <ListTag
-              listTags={filterTags}
-              onRemove={handleRemoveTag}
-              onAdd={handleAddTag}
+              tags={filterTags}
+              onRemoveTag={handleRemoveTag}
+              onAddTag={handleAddTag}
             />
           </Col>
         </Row>

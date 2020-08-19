@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./LeftSidebar.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { setVisibleSearchForm } from "../../noteSlice";
+import { setSearchFormVisible, fetchFavoriteNotes, fetchTopLevelNotes, setNotes, setFavoriteNotes, setTopLevelNotes } from "../../noteSlice";
 import UserMenu from "../../components/UserMenu";
 import SearchForm from "../../components/SearchForm";
 import { Layout, Menu } from "antd";
@@ -11,77 +11,92 @@ import ListNote from "../../components/ListNote";
 import Button from "../../components/Button";
 import { useHistory } from "react-router-dom";
 import noteAPI from "../../../../api/noteAPI";
-
+import { useSelector } from 'react-redux';
 const { Content } = Layout;
 
 
-function LeftSidebar() {
-  const getInitNote = (delay) => {
-    const response = noteAPI.getChildren();
-    return response;
-  };
-
-  const getChildren = async (noteId) => {
-    const response = noteAPI.getChildren();
-    return response;
-  };
-
-  const addKey = useCallback((listNote) => {
-    return listNote.map((note) => {
-      note.key = note.id;
-      if (note.children && Array.isArray(note.children)) {
-        note.children = addKey(note.children);
-      }
-      return note;
-    });
-  });
+function LeftSidebar(props) {
+  const history = useHistory();
 
   const dispatch = useDispatch();
-  const history = useHistory();
-  const [favoriteNotes, setFavoriteNotes] = useState([]);
-  const [rootNotes, setRootNotes] = useState([]);
+  const favoriteNotes = useSelector(state => state.note.favoriteNotes);
+  const topLevelNotes = useSelector(state => state.note.topLevelNotes);
 
-  const openSearchForm = () => {
-    dispatch(setVisibleSearchForm(true));
+  // console.log('favorite: ', favoriteNotes);
+  // console.log('top level: ', topLevelNotes);
+
+  const handleOpenSearchForm = () => {
+    dispatch(setSearchFormVisible(true));
   };
 
-  const selectNote = (selectedKeys, info) => {
-    const selected = info.selectedNodes[0];
-    const { id } = selected;
-    console.log("redirect to note ", id);
-    history.push(`/note/{id}`);
-  };
-
-  function updateTreeData(list, key, children) {
-    return list.map((node) => {
-      if (node.key === key) {
-        return { ...node, children };
-      }
-      if (node.children) {
-        return {
-          ...node,
-          children: updateTreeData(node.children, key, children),
-        };
-      }
-
-      return node;
-    });
+  const handleAddNewNote = async () => {
+    const { newNoteID } = await noteAPI.addNewNote();
+    history.push(`/note/${newNoteID}`);
+    console.log('redirect to new note');
   }
-  const loadChildren = (setter) => {
+
+  const handleNavigateToTrash = async () => {
+    history.push(`/trash`);
+  }
+
+  const addKey = useCallback((listNote = []) => {
+    // console.log(listNote);
+    if (!Array.isArray(listNote))
+      return [];
+    return listNote.map((note) => {
+      const modifyNote = { ...note };
+      modifyNote.key = modifyNote.id;
+      if (note.children && Array.isArray(note.children)) {
+        modifyNote.children = addKey(note.children);
+      }
+      // console.log(modifyNote);
+      return modifyNote;
+    });
+  });
+  
+  const handleLoadChildren = ({ isFavorite = false } = {}) => {
+    const getChildren = async (noteId) => {
+      const { result } = await noteAPI.getChildren(noteId);
+      return result;
+    };
+
+    function updateTreeData(list, key, children) {
+      return list.map((node) => {
+        if (node.id === key) {
+          return { ...node, children };
+        }
+        if (node.children) {
+          return {
+            ...node,
+            children: updateTreeData(node.children, key, children),
+          };
+        }
+
+        return node;
+      });
+    }
+
     return async ({ key, children }) => {
-      if (children) return;
+      if (children)
+        return;
 
-      let newChildren = null;
-      newChildren = await getChildren(key);
-      newChildren = addKey(newChildren);
-
-      setter((origin) => updateTreeData(origin, key, newChildren));
+      const noteID = key;
+      let newChildren = await getChildren(noteID);
+      if (!newChildren.length)
+        return;
+      let origin = isFavorite ? favoriteNotes.data : topLevelNotes.data;
+      let newTree = updateTreeData([...origin], key, newChildren);
+      const setter = isFavorite ? setFavoriteNotes : setTopLevelNotes;
+      // console.log('new tree', newTree);
+      dispatch(setter({
+        newData: newTree
+      }))
     };
   };
 
   useEffect(() => {
-    getInitNote(500).then((response) => setFavoriteNotes(addKey(response)));
-    getInitNote(1000).then((response) => setRootNotes(addKey(response)));
+    dispatch(fetchFavoriteNotes());
+    dispatch(fetchTopLevelNotes());
   }, []);
 
   return (
@@ -92,35 +107,35 @@ function LeftSidebar() {
 
           <Button
             className="search-btn"
-            onClick={openSearchForm}
+            onClick={handleOpenSearchForm}
             icon={<SearchOutlined style={{ color: 'inherit' }} />}
             label="Search"
           />
 
           <ListNote
             title="My Favorite"
-            data={favoriteNotes}
-            handleSelect={selectNote}
-            handleLoad={loadChildren(setFavoriteNotes)}
+            data={addKey(favoriteNotes.data)}
+            isLoading={favoriteNotes.loading}
+            handleLoad={handleLoadChildren({ isFavorite: true })}
           />
 
           <ListNote
             title="My Note"
-            data={rootNotes}
-            handleSelect={selectNote}
-            handleLoad={loadChildren(setRootNotes)}
+            data={addKey(topLevelNotes.data)}
+            isLoading={favoriteNotes.loading}
+            handleLoad={handleLoadChildren()}
           />
 
           <Button
             className="add-btn"
-            onClick={() => { }}
+            onClick={handleAddNewNote}
             icon={<PlusCircleOutlined />}
             label="Add Note"
           />
 
           <Button
             className="trash-btn"
-            onClick={() => { }}
+            onClick={handleNavigateToTrash}
             icon={<DeleteOutlined />}
             label="Trash"
           />
