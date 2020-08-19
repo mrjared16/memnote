@@ -40,18 +40,19 @@ function SearchForm(props) {
 
   const [totalResult, setTotalResult] = useState(0);
 
-  const handleRemoveTag = (removedTag) => {
-    setFilterTags(filterTags.filter((tag) => tag !== removedTag));
-    resetSearch();
-  };
-
-  const handleAddTag = ({ tag }) => {
+  const handleAddTag = ({ tagName }) => {
     // console.log(filterTags)
-    if (tag && filterTags.indexOf(tag) === -1) {
-      setFilterTags([...filterTags, tag]);
+    if (tagName && filterTags.map(tag => tag.name).indexOf(tagName) === -1) {
+      setFilterTags([...filterTags, { name: tagName }]);
       resetSearch();
     }
   };
+
+  const handleRemoveTag = (removedTag) => {
+    setFilterTags(filterTags.filter((tag) => tag.name !== removedTag.name));
+    resetSearch();
+  };
+
 
   // const handleEditTag =
 
@@ -59,6 +60,7 @@ function SearchForm(props) {
     dispatch(setSearchFormVisible(false));
     setNumberOfResult(initialState.numberOfResult);
     setResultItem([]);
+    // setFilterTags([]);
     setTotalResult(0);
   };
   const sortOptions = useMemo(
@@ -155,7 +157,7 @@ function SearchForm(props) {
               initalValue={searchTerm}
               onSearchTermChange={handleSearchTermOnChange}
             />
-            
+
             <SortButton
               sortOptions={sortOptions}
               onSortOptionChange={handleSortOptionChange}
@@ -180,11 +182,9 @@ function SearchForm(props) {
               switchTitle={handleSwitchFilter(setFilterTitle)}
               content={filterContent}
               switchContent={handleSwitchFilter(setFilterContent)}
-            />
-            <ListTag
-              listTags={filterTags}
-              onRemove={handleRemoveTag}
-              onAdd={handleAddTag}
+              tags={filterTags}
+              onRemoveTag={handleRemoveTag}
+              onAddTag={handleAddTag}
             />
           </Col>
         </Row>
