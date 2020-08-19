@@ -1,0 +1,503 @@
+swagger: '2.0'
+info:
+  description: Đặc tả API của ứng dụng MemNote cho user
+  version: 1.0.0
+  title: MemNote API
+
+
+paths:
+  /login:
+    post:
+      operationId: "login"
+      summary: Đăng nhập user vào hệ thống
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: username
+        in: formData
+        description: Tên đăng nhập của user
+        required: true
+        type: string
+      - name: password
+        in: formData
+        description: Mật khẩu của user đã mã hóa
+        required: true
+        type: string
+      responses:
+        200:
+          description: Đăng nhập thành công
+          schema:
+            type: string
+            description: Token của user lưu vào máy người để xác thực
+        400:
+          description: Tên đăng nhập hoặc mật khẩu không chính xác
+  
+  /logout:
+    post:
+      operationId: logout
+      summary: Đăng xuất khỏi hệ thống
+      parameters: []
+      responses:
+        default:
+          description: Đăng xuất thành công
+  
+  /register:
+    post:
+      operationId: register
+      summary: Đăng ký tài khoản người dùng mới cho hệ thống
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: username
+        in: formData
+        type: string
+        required: true
+      - name: email
+        in: formData
+        type: string
+        required: true
+      - name: password
+        in: formData
+        type: string
+        required: true
+      - name: confirmPassword
+        in: formData
+        type: string
+        required: true
+      responses:
+        default:
+          description: Đăng ký thành công
+          schema:
+            $ref: '#/definitions/User'
+          
+  /forgotPassword:
+    post:
+      operationId: forgotPassword
+      summary: Reset mật khẩu cho người dùng
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: "email"
+        in: formData
+        type: string
+        required: true
+      responses:
+        200:
+          description: Reset thành công
+        404:
+          description: Email không tồn tại
+          
+  /profile:
+    get:
+      operationId: getProfile
+      summary: Lấy thông tin cá nhân của người dùng
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      responses:
+        200:
+          description: Lấy thành công
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          description: Chưa xác thực
+    patch:
+      operationId: updateProfile
+      summary: Cập nhật thông tin cá nhân của người dùng
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "user"
+        in: body
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "Thông tin cập nhật thành công"
+        401:
+          description: Chưa xác thực
+          
+  /changePassword:
+    patch:
+      operationId: changePassword
+      summary: Thay đổi mật khẩu của người dùng
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "newPassword"
+        in: formData
+        type: "string"
+      responses:
+        200:
+          description: "Cập nhật mật khẩu thành công"
+        401:
+          description: Chưa xác thực
+        
+  /search:
+    post:
+      operationId: searchNote
+      summary: Tìm kiếm ghi chú
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "searchParams"
+        in: body
+        schema:
+          type: object
+          properties:
+            query:
+              type: string
+            limit:
+              type: integer
+            filter:
+              type: object
+              properties:
+                isTitle:
+                 type: boolean
+                isContent:
+                 type: boolean
+            sort:
+              type: string
+              description: "1 trong các giá trị TitleAsc, TitleDesc, DateAsc, DateDesc"
+            tags:
+              type: array
+              items:
+                type: string
+                description: "ID cuả các thẻ"
+      responses:
+        200:
+          description: Tìm kiếm thành công
+          schema:
+            type: object
+            properties:
+              total:
+                type: integer
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/ListNoteAPIResponse'
+        401:
+          description: Chưa xác thực
+  /notes:
+    get:
+      operationId: "getAllNotes"
+      summary: Lấy danh sách ghi chú
+      parameters: 
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      responses:
+        200:
+          description: "Lấy thành công"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ListNoteAPIResponse'
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+    post:
+      operationId: "addNote"
+      summary: Tạo một ghi chú mới, với tùy chọn parentID giúp tạo ghi chú thuộc một ghi chú cha nào đó
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - in: "body"
+        name: "parentID"
+        required: false
+        schema:
+          type: string
+      responses:
+        201:
+          description: "Ghi chú được tạo thành công"
+          schema:
+            $ref: '#/definitions/Note'
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+    delete:
+      operationId: "deleteAllNote"
+      summary: Xóa hoàn toàn các ghi chú đã xóa
+      parameters: 
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      responses:
+        204:
+          description: "Các ghi chú đã được xóa"
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+  /notes/{id}:
+    get:
+      operationId: "getNoteById"
+      summary: Lấy nội dung ghi chú
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "ID của ghi chú"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Ghi chú được tải thành công"
+          schema:
+            $ref: '#/definitions/Note'
+        404:
+          description: "Không tìm thấy ghi chú"
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+    post:
+      operationId: "duplicateNote"
+      summary: Tạo một ghi chú mới, với tùy chọn parentID giúp tạo ghi chú thuộc một ghi chú cha nào đó, nội dung được sao chép từ ghi chú cho trước
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "ID của ghi chú"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "parentID"
+        required: false
+        schema:
+          type: string
+      responses:
+        201:
+          description: "Ghi chú được tạo thành công"
+          schema:
+            $ref: '#/definitions/Note'
+        404:
+          description: "Không tìm thấy ghi chú"
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+    delete:
+      operationId: "deleteNoteById"
+      summary: Xóa ghi chú, hỗ trợ xóa hoàn toàn
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "ID của ghi chú"
+        required: true
+        type: "string"
+      - name: "isPermanentlyDelete"
+        in: query
+        type: "boolean"
+        required: true
+      responses:
+        204:
+          description: "Ghi chú được xóa thành công"
+        404:
+          description: "Không tìm thấy ghi chú"
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+    patch:
+      operationId: "updateNoteById"
+      summary: Cập nhật nội dung ghi chú, giúp thêm vào yêu thích, cập nhật tiêu đề, nội dung ghi chú, di chuyển ghi chú, phục hồi ghi chú, thêm xóa thẻ
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "ID của ghi chú"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "note"
+        description: "Nội dung cần cập nhật"
+        required: false
+        schema:
+          $ref: "#/definitions/Note"
+      responses:
+        200:
+          description: "Ghi chú đã được cập nhật"
+        404:
+          description: "Không tìm thấy ghi chú"
+        401:
+          description: Chưa xác thực
+      x-swagger-router-controller: "Default"
+          
+  /notes/favoriteNotes:
+    get:
+      operationId: "getFavoriteNotes"
+      summary: Lấy danh ghi chú được yêu thích
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      responses:
+        200:
+          description: Lấy thành công
+          schema: 
+            type: array
+            items: 
+              $ref: '#/definitions/ListNoteAPIResponse'
+        401:
+          description: Chưa xác thực
+          
+  /notes/deleteNotes:
+    get:
+      operationId: "getDeleteNotes"
+      summary: Lấy danh sách ghi chú đã được xóa
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      responses:
+        200:
+          description: Lấy thành công
+          schema: 
+            type: array
+            items: 
+              $ref: '#/definitions/ListNoteAPIResponse'
+        401:
+          description: Chưa xác thực
+  /notes/{id}/children:
+    get:
+      operationId: "getChildrenNotes"
+      summary: Lấy danh sách ghi chú con để hỗ trợ load danh sách
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+        required: true
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Lấy thành công"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ListNoteAPIResponse'
+        404:
+          description: "Không tìm thấy ghi chú"
+        401:
+          description: Chưa xác thực
+  /tags/{id}:
+    patch:
+      operationId: "renameTag"
+      summary: Đổi tên thẻ
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: path
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: Đổi tên thẻ thành công
+        404:
+          description: "Không tìm thấy thẻ"
+        401:
+          description: Chưa xác thực
+    delete:
+      operationId: "removeTag"
+      summary: Xóa tag ra khỏi tất cả các ghi chú
+      parameters:
+      - name: "tokenAuth"
+        in: header
+        type: "string"
+      - name: "id"
+        in: path
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Xóa thành công"
+        404:
+          description: "Không tìm thấy thẻ"
+        401:
+          description: Chưa xác thực
+        
+definitions:
+  User: 
+    type: object
+    properties:
+      id:
+        type: string
+      fullName:
+        type: string
+      username:
+        type: string
+      email:
+        type: string
+      
+  ListNoteAPIResponse:
+    type: object
+    description: "Danh sách ghi chú dạng rút gọn"
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+  Note:
+    type: "object"
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+        description: "Tiêu đề của ghi chú"
+      content:
+        type: string
+        description: "Nội dung của ghi chú"
+      isFavorite:
+        type: boolean
+        description: "Đánh dấu ghi chú được yêu thích"
+      tags:
+        type: array
+        items: 
+          type: object
+          description: "ID và tên của thẻ"
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+      childNote:
+        type: array
+        items: 
+          type: object
+          description: "Danh sách ghi chú con dạng rút gọn"
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+      isDeleted:
+        type: integer
+      lastEdited:
+        type: string
+        description: "lần sửa ghi chú gần nhất"
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /hvphuc99/Memnote/1.0.0
+schemes:
+ - https
