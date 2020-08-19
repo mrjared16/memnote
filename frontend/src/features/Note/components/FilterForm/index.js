@@ -1,9 +1,13 @@
 import React from "react";
 import { Switch, Row, Col } from "antd";
 import "./FilterForm.scss";
+import ListTag from "../ListTag";
 
 function FilterForm(props) {
-  const { title, switchTitle, content, switchContent } = props;
+  const {
+    title, switchTitle,
+    content, switchContent,
+    tags, onRemoveTag, onAddTag } = props;
 
   const data = [
     {
@@ -18,26 +22,18 @@ function FilterForm(props) {
     },
   ];
 
-  if (data[0].value === false) data[1].disabled = true;
-  if (data[1].value === false) data[0].disabled = true;
-
-  // console.log(data);
+  data[0].disabled = !(data[1].value);
+  data[1].disabled = !(data[0].value);
 
   const filterItem = ({ name, value, setter, disabled = false }) => {
     return (
-      <Row key={name}>
-        <Col span={8} className="filter-title">
+      <Row className='filter-item' key={name}>
+        <Col flex='auto' className="filter-name">
           <span>{name}</span>
         </Col>
-        {disabled ? (
-          <Col span={16}>
-            <Switch onChange={setter} checked={value} disabled />
-          </Col>
-        ) : (
-          <Col span={16}>
-            <Switch onChange={setter} checked={value} />
-          </Col>
-        )}
+        <Col className='filter-toggle'>
+          <Switch onChange={setter} checked={value} disabled={disabled} />
+        </Col>
       </Row>
     );
   };
@@ -45,6 +41,16 @@ function FilterForm(props) {
   return (
     <>
       {data.map((item) => filterItem(item))}
+      <Row className='filter-item'>
+        <Col flex='auto' className="filter-name">
+          <span>Tags</span>
+        </Col>
+      </Row>
+      <ListTag
+        tags={tags}
+        onRemove={onRemoveTag}
+        onAdd={onAddTag}
+      />
     </>
   );
 }

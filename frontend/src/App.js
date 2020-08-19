@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Switch>
         {!isAuth && <Route path="/" component={Auth} />}
-        <Route exact path="/" component={Note} />
+        <Route path="/" component={Note} />
         {/* <Route exact path="/user" component={User} /> */}
         <Redirect to='/'/>
       </Switch>

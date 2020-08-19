@@ -1,62 +1,109 @@
 
-let key = 0;
 
+let key = 0;
 const createNote = () => {
     return {
-        id: `id${key++}`,
-        title: `title${key}`,
+        id: `id${key}`,
+        title: `title${key++}`,
     };
 };
+const listNote = () => {
+    // const note = (id, title) => ({id, title});
+    return [createNote(), createNote()];
+}
+
+const listTag = () => {
+    let tag = 0;
+    const createTag = () => ({
+        id: `${tag}`,
+        name: `tagID: ${tag++}`
+    })
+    return [createTag(), createTag()];
+}
+
+const mockupRequest = (result) => new Promise(resolve => {
+    console.log('API response:', result);
+    setTimeout(() => resolve(result), 1000);
+})
 
 const noteAPI = {
+    getNotes: () => {
+        // get /notes
+        return mockupRequest({
+            result: listNote()
+        })
+    },
+    getFavoriteNotes: () => {
+        // get /notes/favoriteNotes
+        return mockupRequest({
+            result: listNote()
+        })
+    },
     getNote: (id) => {
+        // get /notes/id
+
         console.log('load Note ', id);
-        return new Promise(resolve => {
-            console.log('loading');
-            setTimeout(() => {
-                resolve({
-                    data: {
-                        id: 'id1',
-                        title: 'Title',
-                        content: `# abc`,
-                        isFavorite: true,
-                        lastEdited: Date.now(),
-                        tags: [{ id: '1', name: 'tag' }, { id: '1', name: 'tag' }],
-                        children: ['id1', 'id2'],
-                    }
-                });
-                console.log('load done');
-            }, 1000);
+        return mockupRequest({
+            note: {
+                id: 'id1',
+                title: `Title Note ${id}`,
+                content: `# content Note ${id}`,
+                isFavorite: true,
+                tags: listTag(),
+                children: listNote(),
+                lastEdited: Date.now(),
+                isDeleted: false
+            }
         });
     },
-    getChildren: () => {
-        return new Promise((resolve) => {
-            const result = [createNote(), createNote()];
-            setTimeout(() => {
-                resolve(result);
-            }, 1000);
+    getChildren: (id) => {
+        // get /notes/id/children
+        return mockupRequest({
+            result: listNote()
         });
     },
-    search: (params) => {
+    searchNote: (params) => {
+        // post /search
+        // body 
+        //         {
+        //   "query": "string",
+        //   "limit": 0,
+        //   "filter": {
+        //     "isTitle": true,
+        //     "isContent": true
+        //   },
+        //   "sort": "string",
+        //   "tags": [
+        //     "string"
+        //   ]
+        // }
         console.log("Search ", params);
+        const data = [...Array(params.limit).keys()].map(item => createNote());
 
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const data = [];
-
-                for (let i = 0; i < params.limit; i++) {
-                    data.push({
-                        title: "Note",
-                    });
-                }
-
-                const res = {
-                    result: data,
-                    total: 30,
-                };
-                resolve(res);
-            }, 1000);
+        return mockupRequest({
+            result: data,
+            total: 30,
         });
+    },
+    addNewNote: () => {
+        // post /notes
+        console.log('add new note');
+        return mockupRequest({
+            newNoteID: `id${key++}`
+        });
+    },
+    updateNote: ({ }) => {
+
+    },
+    deleteNote: (id) => {
+        // delete /notes/id
+        console.log('delete note ', id);
+        return mockupRequest();
+    },
+    getDeleteNotes: () => {
+        return mockupRequest({
+            result: [createNote(), createNote()]
+        })
     }
 }
 

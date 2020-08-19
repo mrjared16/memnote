@@ -5,7 +5,7 @@ import LoginForm from "../../components/LoginForm";
 import { setToken } from "../../authSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import authAPI from "../../../../api/authAPI";
+import authAPI from "../../../../api/authApi";
 
 function LoginPage(props) {
   const dispatch = useDispatch();

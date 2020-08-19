@@ -1,4 +1,41 @@
-.tag-input {
-  background-color: transparent;
-  color: white;
+$item-selected-color: rgb(71, 76, 80);
+$default-font-color: rgba(255, 255, 255, 0.9);
+
+.list-tag {
+  display: inline-block;
+  .add-tag-input {
+    background-color: transparent;
+    color: white;
+  }
+
+  .add-tag-btn {
+    // background-color: $item-selected-color;
+    opacity: 0.8;
+    padding-left: 5px!important;
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
+
+  .tag {
+    background-color: #2e2f31;
+    border-radius: 10px;
+    border-color: rgba(255, 255, 255, 0.1);
+    // background-color: transparent;
+    color: $default-font-color;
+    padding: 7.5px 10px;
+    margin: 5px 5px 0 0px;
+    span {
+      margin: 5px;
+      color: inherit;
+    }
+  }
+}
+
+.tags {
+  .tag {
+    cursor: pointer;
+    margin: 0 7.5px;
+  }
 }

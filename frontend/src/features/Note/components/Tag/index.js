@@ -9,15 +9,15 @@ function Tag(props) {
 
   return (
     <StyledLibrary.Tag
-      className="edit-tag"
+      className="tag"
       key={title}
       closable={true}
       {...field}
     >
       {icon}
-      <span>
+      {/* <span> */}
         {isLongTag ? `${title.slice(0, 8)}...` : title}
-      </span>
+      {/* </span> */}
     </StyledLibrary.Tag>
   );
 }

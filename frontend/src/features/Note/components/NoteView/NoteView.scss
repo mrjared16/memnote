@@ -30,21 +30,7 @@ $note-view-background-color: rgb(42, 42, 44);
       }
     }
     .tags {
-      .add-tag-btn {
-        background-color: $item-selected-color;
-        opacity: 0.8;
-        &:hover {
-          opacity: 1;
-        }
-      }
       margin: 20px 0px;
-      .tag {
-        background-color: #2e2f31;
-        border-radius: 10px;
-        border-color: #434446;
-        color: $default-font-color;
-        padding: 3px 10px;
-      }
     }
   }
   .ant-btn {
@@ -66,6 +52,19 @@ $note-view-background-color: rgb(42, 42, 44);
       border: none;
       resize: none;
       overflow-y: hidden;
+    }
+  }
+  .viewer-children {
+    margin-top: 150px;
+    .ant-collapse-borderless,
+    .ant-collapse-header {
+      background-color: transparent;
+      color: $default-font-color !important;
+      width: 100%;
+      .search-result-item:hover {
+        color: $default-font-color !important;
+        background-color: $item-selected-color;
+      }
     }
   }
   .reset {
